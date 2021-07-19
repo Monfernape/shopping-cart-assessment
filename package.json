@@ -1,0 +1,29 @@
+{
+  "name": "shopping-cart-assessment",
+  "version": "1.0.0",
+  "description": "Shopping Cart built using Next.js/Express using technologies such as React Query, Tailwind",
+  "main": "index.js",
+  "scripts": {
+    "start": "start npm run start:front && start npm run start:back",
+    "start:front": "cd shopping-cart-frontend && npm run dev",
+    "start:back": "cd shopping-cart-backend && npm run dev"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Monfernape/shopping-cart-assessment.git"
+  },
+  "keywords": [
+    "shopping",
+    "cart",
+    "nextjs",
+    "react",
+    "query",
+    "tailwind"
+  ],
+  "author": "Usman Khalil",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Monfernape/shopping-cart-assessment/issues"
+  },
+  "homepage": "https://github.com/Monfernape/shopping-cart-assessment#readme"
+}

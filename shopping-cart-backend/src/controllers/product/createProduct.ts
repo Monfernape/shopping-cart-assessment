@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { Database } from "../../repositories";
-import { NotFoundError } from "../../bootstrap/middlewares/NotFoundError";
+import { BadRequestError } from "../../bootstrap/middlewares/BadRequestError";
 
 export const createProduct = async (
   req: Request,
@@ -12,6 +12,6 @@ export const createProduct = async (
     await Database.productRepository.createProduct(product)
     res.status(200).send({ message: "Product Created" });
   } catch {
-    next(new NotFoundError());
+    next(new BadRequestError());
   }
 };

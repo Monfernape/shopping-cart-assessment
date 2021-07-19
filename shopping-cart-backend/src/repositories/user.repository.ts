@@ -1,3 +1,4 @@
+import { LeanDocument } from "mongoose";
 import { UserDocument } from "../interfaces";
 import { User } from "../models/user";
 
@@ -18,7 +19,7 @@ export class UserRepository {
     return await new User(userData).save();
   };
 
-  updateUser = async (user: UserDocument) => {
-    return await User.findByIdAndUpdate(user._id, user);
+  updateUser = async (user: LeanDocument<UserDocument>) => {
+    return await User.findByIdAndUpdate(user._id, user, {new: true});
   };
 }

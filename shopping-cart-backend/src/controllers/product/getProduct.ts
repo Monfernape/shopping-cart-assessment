@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { Database } from "../../repositories";
-import { NotFoundError } from "../../bootstrap/middlewares/NotFoundError";
+import { BadRequestError } from "../../bootstrap/middlewares/BadRequestError";
 
 export const getProductById = async (
   req: Request,
@@ -14,7 +14,7 @@ export const getProductById = async (
     );
     res.status(200).send({ message: "Retrieving Product", data: product });
   } catch {
-    next(new NotFoundError());
+    next(new BadRequestError());
   }
 };
 
@@ -27,6 +27,6 @@ export const getProducts = async (
       const products = await Database.productRepository.getProducts()
       res.status(200).send({ message: "Retrieving Products", data: products });
     } catch {
-      next(new NotFoundError());
+      next(new BadRequestError());
     }
   };

@@ -9,4 +9,12 @@ export class AuthService {
   public signup = (user: Omit<User, "spendingHistory">) => {
     return axios.post("/auth/signup", user);
   };
+
+  public updateUser = (user: User) => {
+    return axios.put('/user', user).then(response => response.data.data as User)
+  }
+
+  public getUserById = (userId: string) => {
+    return axios.get(`/user/${userId}`).then(response => response.data.data)
+  }
 }

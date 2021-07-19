@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { Database } from "../../repositories";
-import { NotFoundError } from "../../bootstrap/middlewares/NotFoundError";
+import { BadRequestError } from "../../bootstrap/middlewares/BadRequestError";
 import { UserDocument, CartDocument } from "../../interfaces";
 
 export const buyCartItems = async (
@@ -22,6 +22,6 @@ export const buyCartItems = async (
     await Database.userRepository.updateUser(user);
     res.status(200).send({ message: "Cart Updated" });
   } catch {
-    next(new NotFoundError());
+    next(new BadRequestError());
   }
 };

@@ -1,8 +1,10 @@
 import React from "react";
 import Link from "next/link";
-import { AuthService } from "../services"
-import type { User } from "../models";
+import { useRouter } from "next/router";
 import { LockClosedIcon } from "@heroicons/react/solid";
+import { AuthService } from "../services";
+import { Alert } from "../shared/components";
+import type { User, Error } from "../models";
 
 export const Login = () => {
   const [user, setUser] = React.useState<Pick<User, "username" | "password">>({
@@ -10,20 +12,29 @@ export const Login = () => {
     password: "",
   });
   const [error, setError] = React.useState<boolean>(false);
-
+  const [serverError, setServerError] = React.useState<Error>({ message: "" });
   const auth = new AuthService();
+  const router = useRouter()
 
   const handleFormSubmission = async (event: React.FormEvent) => {
     event.preventDefault();
+    setServerError({ message: "" });
     const { username, password } = user;
     console.log(user);
     if (!username || !password) setError(true);
     else {
       try {
-        const response =  await auth.login(user)
-        console.log({response})
-      } catch(error) {
-        console.log({error})
+        const response = await auth.login(user);
+        localStorage.setItem("user", JSON.stringify(response.data))
+        router.push('/')
+      } catch (err) {
+        const {
+          response: {
+            data: { error },
+          },
+        } = err;
+        setServerError(error);
+        console.log({ error });
       }
     }
   };
@@ -68,6 +79,16 @@ export const Login = () => {
               <Link href="/signup">
                 <a className="text-indigo-500">New User? Sign Up Here</a>
               </Link>
+            </div>
+
+            <div className="flex p-1 w-full">
+              {serverError.message && (
+                <Alert
+                  key={serverError.message}
+                  type={"error"}
+                  message={serverError.message}
+                />
+              )}
             </div>
           </div>
 

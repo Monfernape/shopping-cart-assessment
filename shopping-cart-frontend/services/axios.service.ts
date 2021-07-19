@@ -1,10 +1,7 @@
-import axios, { ResponseType } from 'axios'
+import axios, { ResponseType } from "axios";
 
 const axiosInstance = axios.create({
-    baseURL: 'http://localhost:3001/api',
-    transformResponse: (response) => {
-        response.data
-    }
-})
+  baseURL: "http://localhost:3001/api",
+});
 
-export default axiosInstance
+export default axiosInstance;

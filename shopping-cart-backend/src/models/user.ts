@@ -6,8 +6,8 @@ const schema = new Schema({
   lastName: { type: String, required: true },
   username: { type: String, required: true },
   password: { type: String, required: true },
-  spendingHistory: [{type:Schema.Types.ObjectId, ref:'product'}],
+  spendingHistory: [{ type: Schema.Types.ObjectId, ref: "product" }],
+  role: { type: String, required: true },
 });
 
 export const User = model<UserDocument>("user", schema);
- 

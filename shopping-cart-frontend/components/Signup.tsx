@@ -1,7 +1,10 @@
 import React from "react";
 import Link from "next/link";
-import type { User } from "../models";
+import { useRouter } from "next/router";
 import { LockClosedIcon } from "@heroicons/react/solid";
+import { AuthService } from "../services";
+import { Alert } from "../shared/components";
+import type { User, Error } from "../models";
 
 type ISignUp = Omit<User, "spendingHistory"> & { confirmPassword: string };
 
@@ -12,16 +15,33 @@ export const SignUp = () => {
     firstName: "",
     lastName: "",
     confirmPassword: "",
+    role: "user",
   });
   const [error, setError] = React.useState<boolean>(false);
+  const [serverError, setServerError] = React.useState<Error>({ message: "" });
+  const auth = new AuthService();
+  const router = useRouter();
 
-  const doesPasswordMatch = user.password && user.password === user.confirmPassword
+  const doesPasswordMatch =
+    user.password && user.password === user.confirmPassword;
 
-  const handleFormSubmission = (event: React.FormEvent) => {
+  const handleFormSubmission = async (event: React.FormEvent) => {
     event.preventDefault();
-    const { username, password, confirmPassword } = user;
-    if (!username || !password || password !== confirmPassword) setError(true);
+    setServerError({ message: "" });
+    if (!user.username || !user.password || !doesPasswordMatch) setError(true);
     else {
+      const { confirmPassword, ...rest } = user;
+      try {
+        await auth.signup(rest);
+        router.push("/login");
+      } catch (err) {
+        const {
+          response: {
+            data: { error },
+          },
+        } = err;
+        setServerError(error);
+      }
     }
   };
   return (
@@ -102,6 +122,16 @@ export const SignUp = () => {
               <Link href="/login">
                 <a className="text-indigo-500">Already Have An Account?</a>
               </Link>
+            </div>
+
+            <div className="flex p-1 w-full">
+              {serverError.message && (
+                <Alert
+                  key={serverError.message}
+                  type={"error"}
+                  message={serverError.message}
+                />
+              )}
             </div>
           </div>
 

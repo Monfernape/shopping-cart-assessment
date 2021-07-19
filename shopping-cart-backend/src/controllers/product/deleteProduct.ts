@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { Database } from "../../repositories";
-import { NotFoundError } from "../../bootstrap/middlewares/NotFoundError";
+import { BadRequestError } from "../../bootstrap/middlewares/BadRequestError";
 
 export const deleteProduct = async (
   req: Request,
@@ -12,6 +12,6 @@ export const deleteProduct = async (
     await Database.productRepository.deleteProduct(id as string);
     res.status(200).send({ message: "Product Deleted" });
   } catch {
-    next(new NotFoundError());
+    next(new BadRequestError());
   }
 };

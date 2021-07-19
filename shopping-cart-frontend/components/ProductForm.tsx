@@ -1,24 +1,36 @@
 import React from "react";
-
-interface IProduct {
-  name: string;
-  price: number | null;
-  stock: number | null;
-}
+import { useRouter } from "next/router";
+import { ProductService } from "../services";
+import { Product } from "../models";
 
 interface IProps {
   isEdit?: boolean;
+  editProduct?: Product | null;
 }
 
-export const ProductForm = ({ isEdit = false }: IProps) => {
-  const [product, setProduct] = React.useState<IProduct>({
-    name: "",
-    price: null,
-    stock: null,
-  });
+export const ProductForm = ({ isEdit = false, editProduct = null }: IProps) => {
+  const [product, setProduct] = React.useState<Product>(
+    isEdit
+      ? (editProduct as Product)
+      : {
+          name: "",
+          price: "",
+          stock: "",
+        }
+  );
 
-  const handleProductSubmission = (event: React.FormEvent) => {
+  const router = useRouter();
+  const productService = new ProductService();
+
+  const addProduct = async (event: React.FormEvent) => {
     event.preventDefault();
+    try {
+      if (isEdit) await productService.updateProduct(product);
+      else await productService.addProduct(product);
+      router.push("/products-list");
+    } catch {
+      console.error("ERROR");
+    }
   };
 
   return (
@@ -29,7 +41,7 @@ export const ProductForm = ({ isEdit = false }: IProps) => {
             {isEdit ? "Edit" : "Add"} Product
           </h2>
         </div>
-        <form className="mt-8 space-y-6" onSubmit={handleProductSubmission}>
+        <form className="mt-8 space-y-6" onSubmit={addProduct}>
           <div className="rounded-md shadow-sm -space-y-px">
             <div>
               <label className="sr-only">Name</label>
@@ -46,10 +58,10 @@ export const ProductForm = ({ isEdit = false }: IProps) => {
             <div>
               <label className="sr-only">Price</label>
               <input
-                type="text"
-                value={product.price as number}
+                value={product.price}
+                type="number"
                 onChange={(e) =>
-                  setProduct({ ...product, price: e.target.valueAsNumber })
+                  setProduct({ ...product, price: e.target.value })
                 }
                 className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                 placeholder="Price"
@@ -59,13 +71,13 @@ export const ProductForm = ({ isEdit = false }: IProps) => {
             <div>
               <label className="sr-only">In Stock</label>
               <input
-                type="text"
-                value={product.stock as number}
+                type="number"
+                value={product.stock}
                 onChange={(e) =>
-                  setProduct({ ...product, stock: e.target.valueAsNumber })
+                  setProduct({ ...product, stock: e.target.value })
                 }
                 className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                placeholder="Price"
+                placeholder="Stock"
               />
             </div>
           </div>
@@ -76,7 +88,7 @@ export const ProductForm = ({ isEdit = false }: IProps) => {
               className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
             >
               <span className="absolute left-0 inset-y-0 flex items-center pl-3"></span>
-              {isEdit ? 'Edit' : 'Add'} Product
+              {isEdit ? "Update" : "Add"} Product
             </button>
           </div>
         </form>

@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { Database } from "../../repositories";
-import { NotFoundError } from "../../bootstrap/middlewares/NotFoundError";
+import { BadRequestError } from "../../bootstrap/middlewares/BadRequestError";
 import { ProductDocument, CartDocument } from "../../interfaces";
 
 export const addItemToCart = async (
@@ -33,6 +33,6 @@ export const addItemToCart = async (
         res.status(400).send({ message: "Purchase Error: Item Out Of Stock" });
     }
   } catch {
-    next(new NotFoundError());
+    next(new BadRequestError());
   }
 };
